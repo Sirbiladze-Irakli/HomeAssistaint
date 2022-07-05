@@ -1,4 +1,4 @@
-package com.sirbiladze.HomeAssistaint.config;
+package com.sirbiladze.homeassistaint.config;
 
 import io.swagger.annotations.Api;
 import java.util.ArrayList;

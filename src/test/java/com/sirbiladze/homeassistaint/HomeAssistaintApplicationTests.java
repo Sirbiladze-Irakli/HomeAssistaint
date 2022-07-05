@@ -1,4 +1,4 @@
-package com.sirbiladze.HomeAssistaint;
+package com.sirbiladze.homeassistaint;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

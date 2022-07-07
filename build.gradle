@@ -18,22 +18,33 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('mapstructVersion', '1.5.1.Final')
+	set('swaggerVersion', '1.6.2')
+	set('postgresqlVersion', '42.3.6')
+	set('lombokVersion', '1.18.24')
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-	implementation "io.springfox:springfox-swagger2:3.0.0"
-	implementation "io.springfox:springfox-swagger-ui:3.0.0"
-
+	// sql
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.postgresql:postgresql:42.3.6'
+	implementation "org.postgresql:postgresql:$postgresqlVersion"
+
+	// lombok
+	implementation "org.projectlombok:lombok:$lombokVersion"
+	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+	// swagger
+	implementation "org.springdoc:springdoc-openapi-ui:$swaggerVersion" as Object
+	implementation "io.swagger:swagger-annotations:$swaggerVersion" as Object
 
 	// tools
-	implementation 'org.mapstruct:mapstruct:1.5.1.Final'
-	compileOnly 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	implementation 'junit:junit:4.13.2'
+	implementation "org.mapstruct:mapstruct:$mapstructVersion"
+	annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'

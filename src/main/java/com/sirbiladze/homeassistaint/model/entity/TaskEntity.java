@@ -9,12 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class TaskEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +28,13 @@ public class Task {
   @Column
   private String description;
 
-  @Column
+  @Column(nullable = false)
   private Priority priority;
 
-  @Column
+  @Column(nullable = false)
   private Status status;
 
-  @Column
+  @Column(nullable = false)
   private LocalDate deadline;
 
 }

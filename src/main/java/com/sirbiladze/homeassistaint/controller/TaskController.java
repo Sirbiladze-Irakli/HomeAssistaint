@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class TaskController extends BaseController {
 
-  private TaskService taskService;
+  private final TaskService taskService;
 
   @PostMapping("tasks")
   public void save(@RequestBody TaskDto taskDto) {

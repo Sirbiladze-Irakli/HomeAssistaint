@@ -4,7 +4,6 @@ import com.sirbiladze.homeassistaint.mapper.TaskMapper;
 import com.sirbiladze.homeassistaint.model.dto.TaskDto;
 import com.sirbiladze.homeassistaint.service.TaskService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +28,9 @@ public class TaskController extends BaseController {
     return TaskMapper.INSTANCE.toDto(taskService.getTask(id));
   }
 
-  @PutMapping("tasks")
-  public void update(@RequestBody TaskDto taskDto) {
+  @PutMapping("tasks/{id}")
+  public void update(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+    taskService.updateTask(id, TaskMapper.INSTANCE.fromDto(taskDto));
   }
 
   @DeleteMapping("tasks/{id}")

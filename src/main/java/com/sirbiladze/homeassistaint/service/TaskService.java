@@ -17,20 +17,32 @@ public class TaskService {
   private final TaskRepository taskRepository;
 
   public TaskEntity getTask(Long id) {
-    log.warn("Try to find task with id {}", id);
+    log.debug("Try to find task with id {}", id);
     return taskRepository.findById(id).orElseThrow(
         () -> new NotFoundException(format("Not found Task with id %d", id)));
   }
 
   public void saveTask(TaskEntity taskEntity) {
     taskRepository.save(taskEntity);
-    log.warn("Save task {}", taskEntity);
+    log.debug("Save task {}", taskEntity);
+  }
+
+  public void updateTask(Long id, TaskEntity taskEntity) {
+    TaskEntity taskFromDB = getTask(id);
+    taskFromDB.setTitle(taskEntity.getTitle());
+    taskFromDB.setDescription(taskEntity.getDescription());
+    taskFromDB.setPriority(taskEntity.getPriority());
+    taskFromDB.setStatus(taskEntity.getStatus());
+    taskFromDB.setDeadline(taskEntity.getDeadline());
+
+    taskRepository.save(taskFromDB);
+    log.debug("Update task {}", taskFromDB);
   }
 
   public void deleteTask(Long id) {
     TaskEntity taskEntity = getTask(id);
     taskRepository.delete(taskEntity);
-    log.warn("Delete task {}", taskEntity);
+    log.debug("Delete task {}", taskEntity);
   }
 
 }

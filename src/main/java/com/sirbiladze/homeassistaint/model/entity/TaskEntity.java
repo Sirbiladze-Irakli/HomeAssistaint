@@ -9,32 +9,41 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "tasks")
 public class TaskEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  Long id;
+
+  @Column(nullable = false)
+  String chatId;
+
+  @Column(nullable = false)
+  String userName;
 
   @Column
-  private String title;
+  String title;
 
   @Column
-  private String description;
+  String description;
 
   @Column(nullable = false)
-  private Priority priority;
+  Priority priority;
 
   @Column(nullable = false)
-  private Status status;
+  Status status;
 
   @Column(nullable = false)
-  private LocalDate deadline;
+  LocalDate deadline;
 
 }

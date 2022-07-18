@@ -13,7 +13,8 @@ public class BotAnswerUtils {
     throw new IllegalStateException();
   }
 
-  static List<String> exceptions = List.of(BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE1.getMessage(),
+  static List<String> exceptions = List.of(
+      BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE1.getMessage(),
       BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE2.getMessage(),
       BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE3.getMessage(),
       BotMessageEnum.EXCEPTION_ILLEGAL_MESSAGE4.getMessage());

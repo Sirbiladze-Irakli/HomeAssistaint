@@ -1,6 +1,5 @@
 package com.sirbiladze.homeassistaint.model.entity;
 
-import com.sirbiladze.homeassistaint.model.Priority;
 import com.sirbiladze.homeassistaint.model.Status;
 import java.time.LocalDate;
 import javax.persistence.Column;
@@ -38,12 +37,8 @@ public class TaskEntity {
   String description;
 
   @Column(nullable = false)
-  Priority priority;
-
-  @Column(nullable = false)
   Status status;
 
-  @Column(nullable = false)
   LocalDate deadline;
 
 }

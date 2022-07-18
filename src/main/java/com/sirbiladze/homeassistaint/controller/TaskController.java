@@ -3,6 +3,7 @@ package com.sirbiladze.homeassistaint.controller;
 import com.sirbiladze.homeassistaint.mapper.TaskMapper;
 import com.sirbiladze.homeassistaint.model.dto.TaskDto;
 import com.sirbiladze.homeassistaint.service.TaskService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,11 @@ public class TaskController extends BaseController {
   @PostMapping("tasks")
   public void save(@RequestBody TaskDto taskDto) {
     taskService.saveTask(TaskMapper.INSTANCE.fromDto(taskDto));
+  }
+
+  @GetMapping("tasks/all/{userName}")
+  public List<TaskDto> getAll(@PathVariable String userName) {
+    return TaskMapper.INSTANCE.allToDto(taskService.getAllTasksByUserName(userName));
   }
 
   @GetMapping("tasks/{id}")

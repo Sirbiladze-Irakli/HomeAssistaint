@@ -1,6 +1,5 @@
 package com.sirbiladze.homeassistaint.model.dto;
 
-import com.sirbiladze.homeassistaint.model.Priority;
 import com.sirbiladze.homeassistaint.model.Status;
 import java.time.LocalDate;
 import lombok.AccessLevel;
@@ -15,7 +14,6 @@ public class TaskDto {
   String userName;
   String title;
   String description;
-  Priority priority;
   Status status;
   LocalDate deadline;
 

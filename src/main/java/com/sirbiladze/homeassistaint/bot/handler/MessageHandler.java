@@ -4,6 +4,9 @@ import static com.sirbiladze.homeassistaint.utils.BotAnswerUtils.getRandomExcept
 
 import com.sirbiladze.homeassistaint.bot.keyboards.ReplyKeyboardMaker;
 import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
+import com.sirbiladze.homeassistaint.service.TaskService;
+import java.util.Arrays;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +20,9 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class MessageHandler {
 
   ReplyKeyboardMaker replyKeyboardMaker;
+  ToDoListHandler toDoListHandler;
+  TaskService taskService;
+  static String TASK = "Задача";
 
   public SendMessage answerMessage(Message message) {
     String chatId = message.getChatId().toString();
@@ -28,12 +34,18 @@ public class MessageHandler {
       throw new IllegalArgumentException();
     }
 
+    List<String> newTask = List.of(inputText.split("\n-"));
+    if (!newTask.isEmpty() && TASK.equalsIgnoreCase(newTask.get(0))) {
+      taskService.saveNewTask(newTask, chatId, userName);
+      return toDoListHandler.getTodoList(chatId, userName);
+    }
+
     switch (inputText) {
       case ("/start") :
         sendMessage = getStartMessage(chatId);
         break;
       case ("✏ \uD83D\uDDD3 Список дел \uD83D\uDDD3 \uD83D\uDCCC"):
-        sendMessage = getTodoList(chatId, userName);
+        sendMessage = toDoListHandler.getTodoList(chatId, userName);
         break;
       default:
         sendMessage = new SendMessage(chatId, getRandomException());
@@ -46,11 +58,6 @@ public class MessageHandler {
     sendMessage.enableMarkdown(true);
     sendMessage.setReplyMarkup(replyKeyboardMaker.getMainMenuKeyboard());
     return sendMessage;
-  }
-
-  private SendMessage getTodoList(String chatId, String userName) {
-
-    return null;
   }
 
 }

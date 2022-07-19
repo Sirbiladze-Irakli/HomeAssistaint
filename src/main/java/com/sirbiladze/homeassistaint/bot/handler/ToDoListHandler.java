@@ -1,5 +1,7 @@
 package com.sirbiladze.homeassistaint.bot.handler;
 
+import static com.sirbiladze.homeassistaint.utils.BotAnswerUtils.getRandomException;
+
 import com.sirbiladze.homeassistaint.bot.cache.BotStateCache;
 import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardTaskDetailMaker;
@@ -51,15 +53,24 @@ public class ToDoListHandler {
         botStateCache.saveBotState(chatId, BotStateEnum.ADD_NEW_TASK);
         break;
       case ("editTaskTitle"):
+        if (tasksCache.getTasksMap().get(chatId) == null) {
+          return new SendMessage(chatId, getRandomException());
+        }
         sendMessage = taskMessage(chatId, BotMessageEnum.EDIT_TASK_TITLE.getMessage());
         botStateCache.saveBotState(chatId, BotStateEnum.EDIT_TASK_TITLE);
         break;
       case ("addDescription") :
       case ("editDescription") :
+        if (tasksCache.getTasksMap().get(chatId) == null) {
+          return new SendMessage(chatId, getRandomException());
+        }
         sendMessage = taskMessage(chatId, BotMessageEnum.EDIT_TASK_DESCRIPTION.getMessage());
         botStateCache.saveBotState(chatId, BotStateEnum.EDIT_TASK_DESCRIPTION);
         break;
       case ("changeStatus") :
+        if (tasksCache.getTasksMap().get(chatId) == null) {
+          return new SendMessage(chatId, getRandomException());
+        }
         sendMessage = getUpdateTaskStatusKeyboard(chatId);
         break;
       case ("toDo") :
@@ -72,6 +83,9 @@ public class ToDoListHandler {
         sendMessage = updateTaskStatus(chatId, userName, Status.DONE);
         break;
       case ("deleteOrNot"):
+        if (tasksCache.getTasksMap().get(chatId) == null) {
+          return new SendMessage(chatId, getRandomException());
+        }
         sendMessage = deleteTaskOrNot(chatId);
         break;
       case ("backToTaskDetail") :
@@ -149,7 +163,7 @@ public class ToDoListHandler {
     List<TaskEntity> tasksFromDB = taskService.getAllTasksByUserName(userName);
     sendMessage.setReplyMarkup(
         inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB));
-    botStateCache.getBotStateMap().remove(chatId);
+    tasksCache.getTasksMap().remove(chatId);
     return sendMessage;
   }
 

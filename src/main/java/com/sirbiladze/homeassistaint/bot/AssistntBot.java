@@ -2,12 +2,14 @@ package com.sirbiladze.homeassistaint.bot;
 
 import com.sirbiladze.homeassistaint.bot.handler.MessageHandler;
 import com.sirbiladze.homeassistaint.bot.handler.ToDoListHandler;
+import com.sirbiladze.homeassistaint.utils.BotAnswerUtils;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -48,10 +50,15 @@ public class AssistntBot extends TelegramLongPollingBot {
     }
   }
 
-  private BotApiMethod<?> handleUpdate(Update update) {
+  private SendMessage handleUpdate(Update update) {
     Message message = update.getMessage();
     CallbackQuery query = update.getCallbackQuery();
     if (message != null) {
+
+      if (message.hasSticker() || message.hasAnimation()
+          || message.hasAudio() || message.hasPhoto() || message.hasVoice()) {
+        return new SendMessage(message.getChatId().toString(), BotAnswerUtils.getRandomException());
+      }
       return messageHandler.answerMessage(message);
     }
     if (query != null) {

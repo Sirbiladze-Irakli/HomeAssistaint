@@ -1,32 +1,46 @@
 package com.sirbiladze.homeassistaint.bot.keyboards;
 
+import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
 import com.sirbiladze.homeassistaint.constants.BotButtonTextEnum;
 import com.sirbiladze.homeassistaint.constants.CallbackDataEnum;
 import com.sirbiladze.homeassistaint.model.Status;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class InlineKeyboardTaskDetailMaker {
 
-  public InlineKeyboardMarkup getInlineKeyboardForTaskDetail() {
-    return getInlineMessageButtons();
+  TasksCache tasksCache;
+
+  public InlineKeyboardMarkup getInlineKeyboardForTaskDetail(String chatId) {
+    return getInlineMessageButtons(chatId);
   }
 
-  private InlineKeyboardMarkup getInlineMessageButtons() {
+  private InlineKeyboardMarkup getInlineMessageButtons(String chatId) {
     List<List<InlineKeyboardButton>> buttonList = new ArrayList<>();
+    buttonList.add(getNewRowButton(BotButtonTextEnum.EDIT_TASK_TITLE.getButtonText(),
+        CallbackDataEnum.EDIT_TASK_TITLE.getCallbackData()));
+    if (tasksCache.getTasksMap().get(chatId).getDescription().isEmpty()) {
+      buttonList.add(getNewRowButton(BotButtonTextEnum.ADD_DESCRIPTION.getButtonText(),
+          CallbackDataEnum.ADD_DESCRIPTION.getCallbackData()));
+    } else {
+      buttonList.add(getNewRowButton(BotButtonTextEnum.EDIT_DESCRIPTION.getButtonText(),
+          CallbackDataEnum.EDIT_DESCRIPTION.getCallbackData()));
+    }
     buttonList.add(getNewRowButton(BotButtonTextEnum.CHANGE_STATUS.getButtonText(),
         CallbackDataEnum.CHANGE_STATUS.getCallbackData()));
-    buttonList.add(getNewRowButton(BotButtonTextEnum.DELETE.getButtonText(),
-        CallbackDataEnum.DELETE.getCallbackData()));
-    buttonList.add(getNewRowButton(BotButtonTextEnum.BACK.getButtonText(),
-        CallbackDataEnum.BACK.getCallbackData()));
+    buttonList.add(getNewRowButton(BotButtonTextEnum.DELETE_OR_NOT.getButtonText(),
+        CallbackDataEnum.DELETE_OR_NOT.getCallbackData()));
+    buttonList.add(getNewRowButton(BotButtonTextEnum.BACK_TO_TO_DO_LIST.getButtonText(),
+        CallbackDataEnum.BACK_TO_TO_DO_LIST.getCallbackData()));
 
     InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
     inlineKeyboardMarkup.setKeyboard(buttonList);
@@ -64,4 +78,21 @@ public class InlineKeyboardTaskDetailMaker {
     inlineKeyboardMarkup.setKeyboard(buttonList);
     return inlineKeyboardMarkup;
   }
+
+  public InlineKeyboardMarkup getInlineDeleteButtons() {
+    List<List<InlineKeyboardButton>> buttonList = new ArrayList<>();
+    InlineKeyboardButton backToTaskDetail = new InlineKeyboardButton();
+    backToTaskDetail.setText(BotButtonTextEnum.BACK_TO_TASK_DETAIL.getButtonText());
+    backToTaskDetail.setCallbackData(CallbackDataEnum.BACK_TO_TASK_DETAIL.getCallbackData());
+
+    InlineKeyboardButton delete = new InlineKeyboardButton();
+    delete.setText(BotButtonTextEnum.DELETE_TASK.getButtonText());
+    delete.setCallbackData(CallbackDataEnum.DELETE.getCallbackData());
+
+    buttonList.add(List.of(backToTaskDetail,delete));
+    InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+    inlineKeyboardMarkup.setKeyboard(buttonList);
+    return inlineKeyboardMarkup;
+  }
+
 }

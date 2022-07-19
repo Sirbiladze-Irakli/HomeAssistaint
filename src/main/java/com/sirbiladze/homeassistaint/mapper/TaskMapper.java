@@ -20,8 +20,6 @@ public interface TaskMapper {
 
   List<TaskDto> allToDto(List<TaskEntity> taskEntities);
 
-//  @Mapping(source = "newTask.get(1)", target = "title")
-//  @Mapping(source = "newTask.get(2)", target = "description")
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "deadline", ignore = true)
   TaskEntity map(String title, String description, String chatId, String userName, Status status);

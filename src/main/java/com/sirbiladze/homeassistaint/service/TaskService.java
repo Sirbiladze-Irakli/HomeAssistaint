@@ -2,7 +2,6 @@ package com.sirbiladze.homeassistaint.service;
 
 import static java.lang.String.format;
 
-import com.sirbiladze.homeassistaint.mapper.TaskMapper;
 import com.sirbiladze.homeassistaint.model.Status;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import com.sirbiladze.homeassistaint.model.exception.NotFoundException;
@@ -38,14 +37,6 @@ public class TaskService {
     log.debug("Save task {}", taskEntity);
   }
 
-  public void saveNewTask(List<String> newTask, String chatId, String userName) {
-    TaskEntity taskEntity =
-        TaskMapper.INSTANCE.map(
-            newTask.get(1).trim(), newTask.get(2).trim(), chatId, userName, Status.TO_DO);
-    taskRepository.save(taskEntity);
-    log.debug("Save task {}", taskEntity);
-  }
-
   public void updateTask(Long id, TaskEntity taskEntity) {
     TaskEntity taskFromDB = getTask(id);
     taskFromDB.setTitle(taskEntity.getTitle());
@@ -61,7 +52,21 @@ public class TaskService {
     TaskEntity taskEntity = getTaskByTitleAndUserName(title, userName);
     taskEntity.setStatus(status);
     log.debug("Update status for user \"{}\" task \"{}\" ", userName, title);
-    taskRepository.save(taskEntity);
+    saveTask(taskEntity);
+  }
+
+  public void updateTaskDescription(String title, String userName, String description) {
+    TaskEntity taskEntity = getTaskByTitleAndUserName(title, userName);
+    taskEntity.setDescription(description);
+    log.debug("Update description for user \"{}\" task \"{}\" ", userName, title);
+    saveTask(taskEntity);
+  }
+
+  public void updateTaskTitle(String title, String newTitle, String userName) {
+    TaskEntity taskEntity = getTaskByTitleAndUserName(title, userName);
+    taskEntity.setTitle(newTitle);
+    log.debug("Update title for user \"{}\" task \"{}\" to \"{}\" ", userName, title, newTitle);
+    saveTask(taskEntity);
   }
 
   public void deleteTask(Long id) {

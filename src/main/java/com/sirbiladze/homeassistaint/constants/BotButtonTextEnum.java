@@ -13,10 +13,14 @@ public enum BotButtonTextEnum {
   TO_DO_LIST("✏ \uD83D\uDDD3 Список дел \uD83D\uDDD3 \uD83D\uDCCC"),
   ADD_NEW_TASK("Добавить новую задачу \uD83D\uDDD3"),
   EMPTY_TASK("➖"),
+  EDIT_TASK_TITLE("Редактировать название задачи"),
+  ADD_DESCRIPTION("Добавить описание"),
+  EDIT_DESCRIPTION("Редактировать описание"),
   CHANGE_STATUS("Изменить статус"),
-  DELETE("Удалить"),
-  BACK("Назад");
-
+  DELETE_OR_NOT("Удалить задачу"),
+  DELETE_TASK("Удалить"),
+  BACK_TO_TASK_DETAIL("Вернуться к задаче"),
+  BACK_TO_TO_DO_LIST("Вернуться к списку дел");
 
   String buttonText;
 

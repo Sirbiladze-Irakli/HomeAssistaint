@@ -2,10 +2,10 @@ package com.sirbiladze.homeassistaint.bot.handler;
 
 import static com.sirbiladze.homeassistaint.utils.BotAnswerUtils.getRandomException;
 
+import com.sirbiladze.homeassistaint.bot.cache.BotStateCache;
 import com.sirbiladze.homeassistaint.bot.keyboards.ReplyKeyboardMaker;
 import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
-import com.sirbiladze.homeassistaint.service.TaskService;
-import java.util.List;
+import com.sirbiladze.homeassistaint.constants.BotStateEnum;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,23 +20,22 @@ public class MessageHandler {
 
   ReplyKeyboardMaker replyKeyboardMaker;
   ToDoListHandler toDoListHandler;
-  TaskService taskService;
-  static String TASK = "Задача";
+  BotStateHandler botStateHandler;
+  BotStateCache botStateCache;
 
   public SendMessage answerMessage(Message message) {
     String chatId = message.getChatId().toString();
     String inputText = message.getText();
     String userName = message.getFrom().getUserName();
+    BotStateEnum botState = botStateCache.getBotStateMap().get(chatId);
     SendMessage sendMessage;
 
     if (inputText == null) {
       throw new IllegalArgumentException();
     }
 
-    List<String> newTask = List.of(inputText.split("\n-"));
-    if (!newTask.isEmpty() && TASK.equalsIgnoreCase(newTask.get(0))) {
-      taskService.saveNewTask(newTask, chatId, userName);
-      return toDoListHandler.getTodoList(chatId, userName);
+    if (botState != null && botState != BotStateEnum.NORMAL) {
+      return botStateHandler.processBotState(chatId, inputText, userName, botState);
     }
 
     switch (inputText) {

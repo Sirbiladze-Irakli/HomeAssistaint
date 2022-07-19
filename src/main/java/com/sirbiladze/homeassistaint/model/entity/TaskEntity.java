@@ -30,7 +30,7 @@ public class TaskEntity {
   @Column(nullable = false)
   String userName;
 
-  @Column
+  @Column(nullable = false)
   String title;
 
   @Column

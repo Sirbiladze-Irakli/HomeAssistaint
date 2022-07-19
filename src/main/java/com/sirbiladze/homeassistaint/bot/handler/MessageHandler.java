@@ -5,7 +5,6 @@ import static com.sirbiladze.homeassistaint.utils.BotAnswerUtils.getRandomExcept
 import com.sirbiladze.homeassistaint.bot.keyboards.ReplyKeyboardMaker;
 import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
 import com.sirbiladze.homeassistaint.service.TaskService;
-import java.util.Arrays;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

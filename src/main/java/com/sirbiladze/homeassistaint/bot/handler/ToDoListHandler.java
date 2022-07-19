@@ -3,6 +3,7 @@ package com.sirbiladze.homeassistaint.bot.handler;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardTaskDetailMaker;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardToDoListMaker;
 import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
+import com.sirbiladze.homeassistaint.model.Status;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import com.sirbiladze.homeassistaint.service.TaskService;
 import java.util.List;
@@ -34,11 +35,11 @@ public class ToDoListHandler {
     }
 
     switch (data) {
-      case ("newTask") :
+      case ("addNewTask") :
         sendMessage = addNewTask(chatId);
         break;
       case ("changeStatus") :
-        sendMessage = updateTaskStatus(chatId, text, userName);
+        sendMessage = getUpdateTaskStatusKeyboard(chatId, text, userName);
         break;
       case ("delete") :
         sendMessage = deleteTask(chatId, text, userName);
@@ -46,17 +47,28 @@ public class ToDoListHandler {
       case ("back") :
         sendMessage = getTodoList(chatId, userName);
         break;
+      case ("toDo") :
+        sendMessage = updateTaskStatus(chatId, text, userName, Status.TO_DO);
+        break;
+      case ("inProgress") :
+        sendMessage = updateTaskStatus(chatId, text, userName, Status.IN_PROGRESS);
+        break;
+      case ("done") :
+        sendMessage = updateTaskStatus(chatId, text, userName, Status.DONE);
+        break;
       default:
         sendMessage = getTaskDetail(chatId, data, userName);
     }
     return sendMessage;
   }
 
-  private SendMessage updateTaskStatus(String chatId, String text, String userName) {
+  private SendMessage getUpdateTaskStatusKeyboard(String chatId, String text, String userName) {
     String title = List.of(text.split("\n")).get(0);
     TaskEntity taskEntity = taskService.getTaskByTitleAndUserName(title, userName);
     SendMessage sendMessage =
-        new SendMessage(chatId, BotMessageEnum.STATUS_UPDATE_MESSAGE.getMessage());
+        new SendMessage(chatId, String.format(BotMessageEnum.TASK_DETAIL.getMessage()
+                .concat(BotMessageEnum.STATUS_UPDATE_MESSAGE.getMessage()),
+            taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus()));
     sendMessage.setReplyMarkup(
         inlineKeyboardTaskDetailMaker.getInlineUpdateStatus(taskEntity.getStatus()));
     return sendMessage;
@@ -101,7 +113,13 @@ public class ToDoListHandler {
 
   private String getDeleteTaskText(String title) {
     return String.format(BotMessageEnum.DELETE_TASK.getMessage(), title);
+  }
 
+  private SendMessage updateTaskStatus(
+      String chatId, String text, String userName, Status status) {
+    String title = List.of(text.split("\n")).get(0);
+    taskService.updateTaskStatus(title, userName, status);
+    return getTodoList(chatId, userName);
   }
 
 }

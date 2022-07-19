@@ -40,10 +40,8 @@ public class TaskService {
 
   public void saveNewTask(List<String> newTask, String chatId, String userName) {
     TaskEntity taskEntity =
-        TaskMapper.INSTANCE.map(newTask.get(1), newTask.get(2), chatId, userName, Status.TO_DO);
-//    taskEntity.setTitle(newTask.get(1));
-//    taskEntity.setDescription(newTask.get(2));
-//    taskEntity.setStatus(Status.TO_DO);
+        TaskMapper.INSTANCE.map(
+            newTask.get(1).trim(), newTask.get(2).trim(), chatId, userName, Status.TO_DO);
     taskRepository.save(taskEntity);
     log.debug("Save task {}", taskEntity);
   }
@@ -57,6 +55,13 @@ public class TaskService {
 
     taskRepository.save(taskFromDB);
     log.debug("Update task {}", taskFromDB);
+  }
+
+  public void updateTaskStatus(String title, String userName, Status status) {
+    TaskEntity taskEntity = getTaskByTitleAndUserName(title, userName);
+    taskEntity.setStatus(status);
+    log.debug("Update status for user \"{}\" task \"{}\" ", userName, title);
+    taskRepository.save(taskEntity);
   }
 
   public void deleteTask(Long id) {
@@ -75,4 +80,5 @@ public class TaskService {
     taskRepository.delete(taskEntity);
     log.debug("Delete task {} for user {}", title, userName);
   }
+
 }

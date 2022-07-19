@@ -78,7 +78,7 @@ public class InlineKeyboardToDoListMaker {
     InlineKeyboardButton todoButton = new InlineKeyboardButton();
     InlineKeyboardButton inProgressButton = new InlineKeyboardButton();
     InlineKeyboardButton doneButton = new InlineKeyboardButton();
-    if (!toDoList.isEmpty() && toDoSize >= i) {
+    if (!toDoList.isEmpty() && toDoSize > i) {
       todoButton.setText(toDoList.get(i));
       todoButton.setCallbackData(toDoList.get(i));
       tasksRow.add(todoButton);
@@ -87,7 +87,7 @@ public class InlineKeyboardToDoListMaker {
       todoButton.setCallbackData(BotButtonTextEnum.EMPTY_TASK.getButtonText());
       tasksRow.add(todoButton);
     }
-    if (!inProgressList.isEmpty() && inProgressSize >= i) {
+    if (!inProgressList.isEmpty() && inProgressSize > i) {
       inProgressButton.setText(inProgressList.get(i));
       inProgressButton.setCallbackData(inProgressList.get(i));
       tasksRow.add(inProgressButton);
@@ -96,7 +96,7 @@ public class InlineKeyboardToDoListMaker {
       inProgressButton.setCallbackData(BotButtonTextEnum.EMPTY_TASK.getButtonText());
       tasksRow.add(inProgressButton);
     }
-    if (!doneList.isEmpty() && doneSize >= i) {
+    if (!doneList.isEmpty() && doneSize > i) {
       doneButton.setText(doneList.get(i));
       doneButton.setCallbackData(doneList.get(i));
       tasksRow.add(doneButton);
@@ -110,15 +110,15 @@ public class InlineKeyboardToDoListMaker {
 
   private List<InlineKeyboardButton> getHeaderRow() {
     InlineKeyboardButton toDo = new InlineKeyboardButton();
-    toDo.setText(Status.TO_DO.getText());
+    toDo.setText(Status.TO_DO_HEADER.getText());
     toDo.setCallbackData(CallbackDataEnum.TO_DO.getCallbackData());
 
     InlineKeyboardButton inProgress = new InlineKeyboardButton();
-    inProgress.setText(Status.IN_PROGRESS.getText());
+    inProgress.setText(Status.IN_PROGRESS_HEADER.getText());
     inProgress.setCallbackData(CallbackDataEnum.IN_PROGRESS.getCallbackData());
 
     InlineKeyboardButton done = new InlineKeyboardButton();
-    done.setText(Status.DONE.getText());
+    done.setText(Status.DONE_HEADER.getText());
     done.setCallbackData(CallbackDataEnum.DONE.getCallbackData());
 
     return List.of(toDo, inProgress, done);
@@ -126,8 +126,8 @@ public class InlineKeyboardToDoListMaker {
 
   private List<InlineKeyboardButton> getNewTaskRow() {
     InlineKeyboardButton newTask = new InlineKeyboardButton();
-    newTask.setText(BotButtonTextEnum.HOW_TO_ADD_NEW_TASK.getButtonText());
-    newTask.setCallbackData(CallbackDataEnum.NEW_TASK.getCallbackData());
+    newTask.setText(BotButtonTextEnum.ADD_NEW_TASK.getButtonText());
+    newTask.setCallbackData(CallbackDataEnum.ADD_NEW_TASK.getCallbackData());
     return List.of(newTask);
   }
 

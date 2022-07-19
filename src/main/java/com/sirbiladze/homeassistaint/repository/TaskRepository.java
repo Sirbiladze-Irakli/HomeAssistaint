@@ -15,6 +15,4 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
   Optional<TaskEntity> findByTitleAndUserName(String title, String userName);
 
-  void deleteByTitleAndUserName(String title, String userName);
-
 }

@@ -14,7 +14,7 @@ public enum CallbackDataEnum {
   IN_PROGRESS("inProgress"),
   DONE("done"),
   NONE("➖"),
-  NEW_TASK("newTask"),
+  ADD_NEW_TASK("addNewTask"),
   CHANGE_STATUS("changeStatus"),
   DELETE("delete"),
   BACK("back");

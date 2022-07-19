@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 public enum BotButtonTextEnum {
 
   TO_DO_LIST("✏ \uD83D\uDDD3 Список дел \uD83D\uDDD3 \uD83D\uDCCC"),
-  HOW_TO_ADD_NEW_TASK("Как добавить новую задачу \uD83D\uDDD3"),
+  ADD_NEW_TASK("Добавить новую задачу \uD83D\uDDD3"),
   EMPTY_TASK("➖"),
   CHANGE_STATUS("Изменить статус"),
   DELETE("Удалить"),

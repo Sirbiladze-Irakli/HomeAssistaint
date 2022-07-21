@@ -3,6 +3,7 @@ package com.sirbiladze.homeassistaint.bot;
 import com.sirbiladze.homeassistaint.bot.handler.MessageHandler;
 import com.sirbiladze.homeassistaint.bot.handler.ToDoListHandler;
 import com.sirbiladze.homeassistaint.utils.BotAnswerUtils;
+import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
@@ -50,21 +51,21 @@ public class AssistntBot extends TelegramLongPollingBot {
     }
   }
 
-  private SendMessage handleUpdate(Update update) {
+  private BotApiMethod<?> handleUpdate(Update update) {
     Message message = update.getMessage();
     CallbackQuery query = update.getCallbackQuery();
-    if (message != null) {
-
-      if (message.hasSticker() || message.hasAnimation()
-          || message.hasAudio() || message.hasPhoto() || message.hasVoice()) {
-        return new SendMessage(message.getChatId().toString(), BotAnswerUtils.getRandomException());
-      }
-      return messageHandler.answerMessage(message);
-    }
-    if (query != null) {
-      return toDoListHandler.toDoListProcessing(query);
-    }
-    return null;
+//    if (message != null) {
+//
+//      if (message.hasSticker() || message.hasAnimation()
+//          || message.hasAudio() || message.hasPhoto() || message.hasVoice()) {
+//        return new SendMessage(message.getChatId().toString(), BotAnswerUtils.getRandomException());
+//      }
+//      return messageHandler.answerMessage(message);
+//    }
+//    if (query != null) {
+      return toDoListHandler.toDoListProcessing(message, query);
+//    }
+//    return null;
   }
 
 }

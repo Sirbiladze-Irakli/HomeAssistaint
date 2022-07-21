@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -23,28 +24,34 @@ public class BotStateHandler {
   BotStateCache botStateCache;
   TasksCache tasksCache;
 
-  public SendMessage processBotState(String chatId, String inputText, String userName,
-      BotStateEnum botState) {
+  public SendMessage processBotState(EditMessageText editMessageText, String inputText,
+      String userName, BotStateEnum botState) {
     if (botState == BotStateEnum.ADD_NEW_TASK) {
       TaskEntity taskEntity = TaskMapper.INSTANCE.map(
-          inputText, "", chatId, userName, Status.TO_DO);
+          inputText, "", editMessageText.getChatId(), userName, Status.TO_DO);
       taskService.saveTask(taskEntity);
-      tasksCache.saveTask(chatId, taskEntity);
-      botStateCache.saveBotState(chatId, BotStateEnum.NORMAL);
+      tasksCache.saveTask(editMessageText.getChatId(), taskEntity);
+      botStateCache.saveBotState(editMessageText.getChatId(), BotStateEnum.NORMAL);
     }
     if (botState == BotStateEnum.EDIT_TASK_DESCRIPTION) {
       taskService.updateTaskDescription(
-          tasksCache.getTasksMap().get(chatId).getTitle(), userName, inputText);
-      tasksCache.getTasksMap().get(chatId).setDescription(inputText);
-      botStateCache.saveBotState(chatId, BotStateEnum.NORMAL);
+          tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle(),
+          userName, inputText);
+      tasksCache.getTasksMap().get(editMessageText.getChatId()).setDescription(inputText);
+      botStateCache.saveBotState(editMessageText.getChatId(), BotStateEnum.NORMAL);
     }
     if (botState == BotStateEnum.EDIT_TASK_TITLE) {
       taskService.updateTaskTitle(
-          tasksCache.getTasksMap().get(chatId).getTitle(), inputText, userName);
-      tasksCache.getTasksMap().get(chatId).setTitle(inputText);
-      botStateCache.saveBotState(chatId, BotStateEnum.NORMAL);
+          tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle(),
+          inputText, userName);
+      tasksCache.getTasksMap().get(editMessageText.getChatId()).setTitle(inputText);
+      botStateCache.saveBotState(editMessageText.getChatId(), BotStateEnum.NORMAL);
     }
-    return toDoListHandler.getTaskDetail(
-        chatId, tasksCache.getTasksMap().get(chatId).getTitle(), userName);
+    toDoListHandler.getTaskDetail(
+        editMessageText, tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle(), userName);
+    SendMessage sendMessage =
+        new SendMessage(editMessageText.getChatId(), editMessageText.getText());
+    sendMessage.setReplyMarkup(editMessageText.getReplyMarkup());
+    return sendMessage;
   }
 }

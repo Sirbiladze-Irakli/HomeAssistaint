@@ -1,12 +1,10 @@
 package com.sirbiladze.homeassistaint.bot.handler;
 
-import static com.sirbiladze.homeassistaint.utils.BotAnswerUtils.getRandomException;
-
 import com.sirbiladze.homeassistaint.bot.cache.BotStateCache;
 import com.sirbiladze.homeassistaint.bot.keyboards.ReplyKeyboardMaker;
 import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
 import com.sirbiladze.homeassistaint.constants.BotStateEnum;
-import java.io.Serializable;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 public class MessageHandler {
 
   ReplyKeyboardMaker replyKeyboardMaker;
-  ToDoListHandler toDoListHandler;
+  CallbackQueryHandler callbackQueryHandler;
   BotStateHandler botStateHandler;
   BotStateCache botStateCache;
 
@@ -62,4 +60,7 @@ public class MessageHandler {
     return sendMessage;
   }
 
+  public List<BotApiMethod<?>> processMessage(Message message) {
+    return null;
+  }
 }

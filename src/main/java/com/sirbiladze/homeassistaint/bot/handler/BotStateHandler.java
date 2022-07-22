@@ -19,7 +19,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 @RequiredArgsConstructor
 public class BotStateHandler {
 
-  ToDoListHandler toDoListHandler;
+  CallbackQueryHandler callbackQueryHandler;
   TaskService taskService;
   BotStateCache botStateCache;
   TasksCache tasksCache;
@@ -47,7 +47,7 @@ public class BotStateHandler {
       tasksCache.getTasksMap().get(editMessageText.getChatId()).setTitle(inputText);
       botStateCache.saveBotState(editMessageText.getChatId(), BotStateEnum.NORMAL);
     }
-    toDoListHandler.getTaskDetail(
+    callbackQueryHandler.getTaskDetail(
         editMessageText, tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle(), userName);
     SendMessage sendMessage =
         new SendMessage(editMessageText.getChatId(), editMessageText.getText());

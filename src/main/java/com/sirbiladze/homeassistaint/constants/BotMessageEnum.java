@@ -32,7 +32,9 @@ public enum BotMessageEnum {
   EXCEPTION_ILLEGAL_MESSAGE1("Ничего непонятно, но очень интересно!\n"),
   EXCEPTION_ILLEGAL_MESSAGE2("Меня к такому не готовили...\n"),
   EXCEPTION_ILLEGAL_MESSAGE3("Задай мне этот вопрос когда меня обновят, ладно?\n"),
-  EXCEPTION_ILLEGAL_MESSAGE4("Мой создатель не удосужился научить меня всем людским премудростям.\n");
+  EXCEPTION_ILLEGAL_MESSAGE4("Мой создатель не удосужился научить меня всем людским премудростям.\n"),
+  MAIN_MENU("Вы находитесь в главном меню бота. \n"
+      + "Здесь можно выбрать одну из возможностей бота.");
 
   String message;
 

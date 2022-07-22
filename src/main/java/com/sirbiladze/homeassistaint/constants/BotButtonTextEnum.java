@@ -20,7 +20,8 @@ public enum BotButtonTextEnum {
   DELETE_OR_NOT("Удалить задачу"),
   DELETE_TASK("Удалить"),
   BACK_TO_TASK_DETAIL("Вернуться к задаче"),
-  BACK_TO_TO_DO_LIST("Вернуться к списку дел");
+  BACK_TO_TO_DO_LIST("Вернуться к списку дел"),
+  BACK_TO_MAIN_MENU("Вернуться в главное меню");
 
   String buttonText;
 

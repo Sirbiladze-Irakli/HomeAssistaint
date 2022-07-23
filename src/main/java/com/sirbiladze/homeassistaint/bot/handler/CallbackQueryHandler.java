@@ -71,13 +71,6 @@ public class CallbackQueryHandler extends BaseHandler {
       return List.of(deleteMessage1);
     }
 
-//    BotStateEnum botState = botStateCache.getBotStateMap().get(message != null ?
-//        message.getChatId().toString() : query.getMessage().getChatId().toString());
-
-//    if (botState != null && botState != BotStateEnum.NORMAL) {
-//      return botStateHandler.processBotState(editMessageText, message.getText(),
-//          message.getChat().getUserName(), botState);
-//    }
   }
 
   public List<BotApiMethod<?>> processQuery(CallbackQuery query) {
@@ -130,12 +123,11 @@ public class CallbackQueryHandler extends BaseHandler {
       case ("deleteOrNot"):
         methods = List.of(deleteTaskOrNot(chatId, messageId));
         break;
-//      case ("backToTaskDetail") :
-//        methods = List.of(getTaskDetail(chatId, messageId,
-//            tasksCache.getTasksMap().get(chatId).getTitle(), userName));
-//        break;
       case ("delete") :
         methods = List.of(deleteTask(chatId, messageId, userName));
+        break;
+      case ("➖") :
+        methods = Collections.emptyList();
         break;
       case ("backToMainMenu"):
         methods = mainMenuHandler.backToMainMenu(chatId, messageId);

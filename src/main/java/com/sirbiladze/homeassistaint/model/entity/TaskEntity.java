@@ -1,6 +1,6 @@
 package com.sirbiladze.homeassistaint.model.entity;
 
-import com.sirbiladze.homeassistaint.model.Status;
+import com.sirbiladze.homeassistaint.model.constants.Status;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;

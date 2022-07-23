@@ -1,6 +1,6 @@
 package com.sirbiladze.homeassistaint.bot.keyboards;
 
-import static com.sirbiladze.homeassistaint.constants.BotButtonTextEnum.TO_DO_LIST;
+import static com.sirbiladze.homeassistaint.model.constants.BotButtonTextEnum.TO_DO_LIST;
 
 import java.util.ArrayList;
 import java.util.List;

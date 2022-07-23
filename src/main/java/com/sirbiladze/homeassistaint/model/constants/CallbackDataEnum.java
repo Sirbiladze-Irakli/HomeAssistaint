@@ -1,4 +1,4 @@
-package com.sirbiladze.homeassistaint.constants;
+package com.sirbiladze.homeassistaint.model.constants;
 
 import lombok.AccessLevel;
 import lombok.Getter;

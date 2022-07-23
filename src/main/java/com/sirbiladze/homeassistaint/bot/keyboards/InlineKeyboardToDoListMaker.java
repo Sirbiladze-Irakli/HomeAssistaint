@@ -1,8 +1,8 @@
 package com.sirbiladze.homeassistaint.bot.keyboards;
 
-import com.sirbiladze.homeassistaint.constants.BotButtonTextEnum;
-import com.sirbiladze.homeassistaint.constants.CallbackDataEnum;
-import com.sirbiladze.homeassistaint.model.Status;
+import com.sirbiladze.homeassistaint.model.constants.BotButtonTextEnum;
+import com.sirbiladze.homeassistaint.model.constants.CallbackDataEnum;
+import com.sirbiladze.homeassistaint.model.constants.Status;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,14 @@ public class InlineKeyboardToDoListMaker {
     for (int i = 0; i < biggestSize; i++) {
       buttonList.add(getTasksRow(i));
     }
-    buttonList.add(getNewTaskRow());
+    buttonList.add(getCustomRow(
+        BotButtonTextEnum.ADD_NEW_TASK.getButtonText(),
+        CallbackDataEnum.ADD_NEW_TASK.getCallbackData()
+    ));
+    buttonList.add(getCustomRow(
+        BotButtonTextEnum.BACK_TO_MAIN_MENU.getButtonText(),
+        CallbackDataEnum.BACK_TO_MAIN_MENU.getCallbackData()
+    ));
 
     InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
     inlineKeyboardMarkup.setKeyboard(buttonList);
@@ -124,10 +131,10 @@ public class InlineKeyboardToDoListMaker {
     return List.of(toDo, inProgress, done);
   }
 
-  private List<InlineKeyboardButton> getNewTaskRow() {
+  private List<InlineKeyboardButton> getCustomRow(String text, String callbackData) {
     InlineKeyboardButton newTask = new InlineKeyboardButton();
-    newTask.setText(BotButtonTextEnum.ADD_NEW_TASK.getButtonText());
-    newTask.setCallbackData(CallbackDataEnum.ADD_NEW_TASK.getCallbackData());
+    newTask.setText(text);
+    newTask.setCallbackData(callbackData);
     return List.of(newTask);
   }
 

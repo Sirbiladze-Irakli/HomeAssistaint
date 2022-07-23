@@ -2,9 +2,10 @@ package com.sirbiladze.homeassistaint.bot.handler;
 
 import com.sirbiladze.homeassistaint.bot.cache.BotStateCache;
 import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
-import com.sirbiladze.homeassistaint.constants.BotStateEnum;
+import com.sirbiladze.homeassistaint.mapper.BotApiMethodMapper;
+import com.sirbiladze.homeassistaint.model.constants.BotStateEnum;
 import com.sirbiladze.homeassistaint.mapper.TaskMapper;
-import com.sirbiladze.homeassistaint.model.Status;
+import com.sirbiladze.homeassistaint.model.constants.Status;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import com.sirbiladze.homeassistaint.service.TaskService;
 import lombok.AccessLevel;
@@ -47,8 +48,11 @@ public class BotStateHandler {
       tasksCache.getTasksMap().get(editMessageText.getChatId()).setTitle(inputText);
       botStateCache.saveBotState(editMessageText.getChatId(), BotStateEnum.NORMAL);
     }
-    callbackQueryHandler.getTaskDetail(
-        editMessageText, tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle(), userName);
+//    callbackQueryHandler.getTaskDetail(
+//        editMessageText,
+//        tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle(),
+//        userName);
+
     SendMessage sendMessage =
         new SendMessage(editMessageText.getChatId(), editMessageText.getText());
     sendMessage.setReplyMarkup(editMessageText.getReplyMarkup());

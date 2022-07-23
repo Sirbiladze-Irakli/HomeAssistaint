@@ -1,16 +1,20 @@
 package com.sirbiladze.homeassistaint.bot.handler;
 
 import com.sirbiladze.homeassistaint.bot.cache.BotStateCache;
+import com.sirbiladze.homeassistaint.bot.cache.InterfaceMessageCache;
 import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardTaskDetailMaker;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardToDoListMaker;
-import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
-import com.sirbiladze.homeassistaint.model.Status;
+import com.sirbiladze.homeassistaint.mapper.BotApiMethodMapper;
+import com.sirbiladze.homeassistaint.model.constants.BotMessageEnum;
+import com.sirbiladze.homeassistaint.model.constants.BotStateEnum;
+import com.sirbiladze.homeassistaint.model.constants.Status;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import com.sirbiladze.homeassistaint.service.TaskService;
+import com.sirbiladze.homeassistaint.utils.CallbackDataEnumUtils;
+import java.util.Collections;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -19,18 +23,34 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
-public class CallbackQueryHandler extends BotHandler {
+public class CallbackQueryHandler extends BaseHandler {
 
   InlineKeyboardToDoListMaker inlineKeyboardToDoListMaker;
   InlineKeyboardTaskDetailMaker inlineKeyboardTaskDetailMaker;
-  TaskService taskService;
+  MainMenuHandler mainMenuHandler;
   BotStateCache botStateCache;
   TasksCache tasksCache;
-//  BotStateHandler botStateHandler;
+  InterfaceMessageCache interfaceMessageCache;
+
+  public CallbackQueryHandler(TaskService taskService,
+      InlineKeyboardTaskDetailMaker inlineKeyboardTaskDetailMaker,
+      InlineKeyboardToDoListMaker inlineKeyboardToDoListMaker,
+      InlineKeyboardTaskDetailMaker inlineKeyboardTaskDetailMaker1,
+      MainMenuHandler mainMenuHandler,
+      BotStateCache botStateCache, TasksCache tasksCache,
+      InterfaceMessageCache interfaceMessageCache) {
+    super(taskService, inlineKeyboardTaskDetailMaker);
+    this.inlineKeyboardToDoListMaker = inlineKeyboardToDoListMaker;
+    this.inlineKeyboardTaskDetailMaker = inlineKeyboardTaskDetailMaker1;
+    this.mainMenuHandler = mainMenuHandler;
+    this.botStateCache = botStateCache;
+    this.tasksCache = tasksCache;
+    this.interfaceMessageCache = interfaceMessageCache;
+  }
 
   public List<BotApiMethod<?>> toDoListProcessing(Message message, CallbackQuery query) {
 
@@ -38,7 +58,7 @@ public class CallbackQueryHandler extends BotHandler {
     if (message != null && message.getText().equals("/start")) {
       SendMessage sendMessage = new SendMessage(message.getChatId().toString(),
           BotMessageEnum.TO_DO_LIST.getMessage());
-      getTodoList(editMessageText, message.getChat().getUserName());
+//      getTodoList(editMessageText.getChatId(),  message.getChat().getUserName());
       sendMessage.setReplyMarkup(editMessageText.getReplyMarkup());
       DeleteMessage deleteMessage =
           new DeleteMessage(message.getChatId().toString(), message.getMessageId());
@@ -58,179 +78,136 @@ public class CallbackQueryHandler extends BotHandler {
 //      return botStateHandler.processBotState(editMessageText, message.getText(),
 //          message.getChat().getUserName(), botState);
 //    }
+  }
 
-//    String chatId = query.getMessage().getChatId().toString();
-//    String userName = query.getFrom().getUserName();
-//    String data = query.getData();
-//    SendMessage sendMessage;
-//    editMessageText.setChatId(chatId);
-//    editMessageText.setMessageId(query.getMessage().getMessageId());
-//
-//    if (data == null) {
-//      throw new IllegalArgumentException();
-//    }
-//
-//    if (!CallbackDataEnumUtils.checkEnum(data)) {
-//      tasksCache.saveTask(chatId, taskService.getTaskByTitleAndUserName(data, userName));
-//    }
-//
-//    switch (data) {
-//      case ("addNewTask") :
-////        sendMessage = taskMessage(chatId, BotMessageEnum.ADD_NEW_TASK.getMessage());
-//        editMessageText.setText(BotMessageEnum.ADD_NEW_TASK.getMessage());
-//        botStateCache.saveBotState(chatId, BotStateEnum.ADD_NEW_TASK);
-//        break;
-//      case ("editTaskTitle"):
-//        if (tasksCache.getTasksMap().get(chatId) == null) {
-//          return new SendMessage(chatId, getRandomException());
-//        }
-////        sendMessage = taskMessage(chatId, BotMessageEnum.EDIT_TASK_TITLE.getMessage());
-//        editMessageText.setText(BotMessageEnum.EDIT_TASK_TITLE.getMessage());
-//        botStateCache.saveBotState(chatId, BotStateEnum.EDIT_TASK_TITLE);
-//        break;
-//      case ("addDescription") :
-//      case ("editDescription") :
-//        if (tasksCache.getTasksMap().get(chatId) == null) {
-//          return (BotApiMethod<?>) List.of(new SendMessage(chatId, getRandomException()));
-//        }
-////        sendMessage = taskMessage(chatId, BotMessageEnum.EDIT_TASK_DESCRIPTION.getMessage());
-//        editMessageText.setText(BotMessageEnum.EDIT_TASK_DESCRIPTION.getMessage());
-//        botStateCache.saveBotState(chatId, BotStateEnum.EDIT_TASK_DESCRIPTION);
-//        break;
-//      case ("changeStatus") :
-//        if (tasksCache.getTasksMap().get(chatId) == null) {
-//          return new SendMessage(chatId, getRandomException());
-//        }
-////        sendMessage = getUpdateTaskStatusKeyboard(chatId);
-//        getUpdateTaskStatusKeyboard(editMessageText);
-//        break;
-//      case ("toDo") :
-////        sendMessage = updateTaskStatus(chatId, userName, Status.TO_DO);
-//        updateTaskStatus(editMessageText, userName, Status.TO_DO);
-//        break;
-//      case ("inProgress") :
-////        sendMessage = updateTaskStatus(chatId, userName, Status.IN_PROGRESS);
-//        updateTaskStatus(editMessageText, userName, Status.IN_PROGRESS);
-//        break;
-//      case ("done") :
-////        sendMessage = updateTaskStatus(chatId, userName, Status.DONE);
-//        updateTaskStatus(editMessageText, userName, Status.DONE);
-//        break;
-//      case ("deleteOrNot"):
-//        if (tasksCache.getTasksMap().get(chatId) == null) {
-//          return new SendMessage(chatId, getRandomException());
-//        }
-////        sendMessage = deleteTaskOrNot(chatId);
-//        deleteTaskOrNot(editMessageText);
-//        break;
+  public List<BotApiMethod<?>> processQuery(CallbackQuery query) {
+    String data = query.getData();
+    String chatId = query.getMessage().getChatId().toString();
+    Integer messageId = query.getMessage().getMessageId();
+    String userName = query.getFrom().getUserName();
+    List<BotApiMethod<?>> methods;
+
+    isEmpty(query.getData());
+    if (!CallbackDataEnumUtils.checkEnum(data)) {
+      tasksCache.saveTask(chatId, getTaskService().getTaskByTitleAndUserName(data, userName));
+    }
+
+    switch (data) {
+      case ("toDoList"):
+      case ("backToToDoList"):
+        methods = getTodoList(chatId, messageId, userName);
+        botStateCache.saveBotState(chatId, BotStateEnum.NORMAL);
+        interfaceMessageCache.saveInterfaceMessage(chatId, messageId);
+        break;
+      case ("addNewTask"):
+        methods = List.of(newTaskMessage(chatId, messageId,
+            BotMessageEnum.ADD_NEW_TASK.getMessage()));
+        botStateCache.saveBotState(chatId, BotStateEnum.ADD_NEW_TASK);
+        break;
+      case ("editTaskTitle"):
+        methods = List.of(newTaskMessage(chatId, messageId,
+            BotMessageEnum.EDIT_TASK_TITLE.getMessage()));
+        botStateCache.saveBotState(chatId, BotStateEnum.EDIT_TASK_TITLE);
+        break;
+      case ("addDescription") :
+      case ("editDescription") :
+        methods = List.of(newTaskMessage(chatId, messageId,
+            BotMessageEnum.EDIT_TASK_DESCRIPTION.getMessage()));
+        botStateCache.saveBotState(chatId, BotStateEnum.EDIT_TASK_DESCRIPTION);
+        break;
+      case ("changeStatus") :
+        methods = List.of(getUpdateTaskStatusKeyboard(chatId, messageId));
+        break;
+      case ("toDo") :
+        methods = updateTaskStatus(chatId, messageId, userName, Status.TO_DO);
+        break;
+      case ("inProgress") :
+        methods = updateTaskStatus(chatId, messageId, userName, Status.IN_PROGRESS);
+        break;
+      case ("done") :
+        methods = updateTaskStatus(chatId, messageId, userName, Status.DONE);
+        break;
+      case ("deleteOrNot"):
+        methods = List.of(deleteTaskOrNot(chatId, messageId));
+        break;
 //      case ("backToTaskDetail") :
-////        sendMessage =
-////            getTaskDetail(chatId, tasksCache.getTasksMap().get(chatId).getTitle(), userName);
-//        getTaskDetail(editMessageText, tasksCache.getTasksMap().get(chatId).getTitle(), userName);
+//        methods = List.of(getTaskDetail(chatId, messageId,
+//            tasksCache.getTasksMap().get(chatId).getTitle(), userName));
 //        break;
-//      case ("delete") :
-////        sendMessage = deleteTask(chatId, userName);
-//        deleteTask(editMessageText, userName);
-//        break;
-//      case ("backToToDoList") :
-////        sendMessage = getTodoList(chatId, userName);
-//        getTodoList(editMessageText, userName);
-//        break;
-//      default:
-////        sendMessage = getTaskDetail(chatId, data, userName);
-//        getTaskDetail(editMessageText, data, userName);
-//    }
-//    return (BotApiMethod<?>) List.of(editMessageText);
+      case ("delete") :
+        methods = List.of(deleteTask(chatId, messageId, userName));
+        break;
+      case ("backToMainMenu"):
+        methods = mainMenuHandler.backToMainMenu(chatId, messageId);
+        break;
+      default:
+        methods = List.of(getTaskDetail(chatId, messageId,
+            tasksCache.getTasksMap().get(chatId).getTitle(), userName));
+    }
+    return methods;
   }
 
-  private void deleteTaskOrNot(EditMessageText editMessageText) {
-    editMessageText.setText(BotMessageEnum.DELETE_OR_NOT.getMessage());
-    editMessageText.setReplyMarkup(
-        inlineKeyboardTaskDetailMaker.getInlineDeleteButtons());
-//    SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.DELETE_OR_NOT.getMessage());
-//    sendMessage.setReplyMarkup(
-//        inlineKeyboardTaskDetailMaker.getInlineDeleteButtons());
-//    return sendMessage;
+  private EditMessageText deleteTaskOrNot(String chatId, Integer messageId) {
+    return BotApiMethodMapper.INSTANCE
+        .map(
+            chatId,
+            messageId,
+            BotMessageEnum.DELETE_OR_NOT.getMessage(),
+            inlineKeyboardTaskDetailMaker.getInlineDeleteButtons()
+        );
   }
 
-  private void getUpdateTaskStatusKeyboard(EditMessageText editMessageText) {
-    TaskEntity taskEntity = tasksCache.getTasksMap().get(editMessageText.getChatId());
-    editMessageText.setText(String.format(BotMessageEnum.TASK_DETAIL.getMessage()
-        .concat(BotMessageEnum.STATUS_UPDATE_MESSAGE.getMessage()),
-        taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus().getText()));
-    editMessageText.setReplyMarkup(
-        inlineKeyboardTaskDetailMaker.getInlineUpdateStatus(taskEntity.getStatus()));
-//    SendMessage sendMessage =
-//        new SendMessage(chatId, String.format(BotMessageEnum.TASK_DETAIL.getMessage()
-//                .concat(BotMessageEnum.STATUS_UPDATE_MESSAGE.getMessage()),
-//            taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus().getText()));
-//    sendMessage.setReplyMarkup(
-//        inlineKeyboardTaskDetailMaker.getInlineUpdateStatus(taskEntity.getStatus()));
-//    return sendMessage;
+  private EditMessageText getUpdateTaskStatusKeyboard(String chatId, Integer messageId) {
+    TaskEntity taskEntity = tasksCache.getTasksMap().get(chatId);
+    String text = String.format(BotMessageEnum.TASK_DETAIL.getMessage()
+            .concat(BotMessageEnum.STATUS_UPDATE_MESSAGE.getMessage()),
+        taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus().getText());
+    InlineKeyboardMarkup inlineKeyboardMarkup =
+        inlineKeyboardTaskDetailMaker.getInlineUpdateStatus(taskEntity.getStatus());
+    return BotApiMethodMapper.INSTANCE.map(chatId, messageId, text, inlineKeyboardMarkup);
   }
 
-  public EditMessageText getTaskDetail(EditMessageText editMessageText, String title, String userName) {
-    TaskEntity taskEntityFromDB = taskService.getTaskByTitleAndUserName(title, userName);
-    editMessageText.setText(getTaskDetailText(taskEntityFromDB));
-    editMessageText.setReplyMarkup(
-        inlineKeyboardTaskDetailMaker.getInlineKeyboardForTaskDetail(editMessageText.getChatId()));
-    return editMessageText;
-//    SendMessage sendMessage = new SendMessage(chatId, getTaskDetailText(taskEntityFromDB));
-//    sendMessage.setReplyMarkup(
-//        inlineKeyboardTaskDetailMaker.getInlineKeyboardForTaskDetail(chatId));
-//    return sendMessage;
-  }
-
-  public void getTodoList(EditMessageText editMessageText, String userName) {
-    List<TaskEntity> tasksFromDB = taskService.getAllTasksByUserName(userName);
-    editMessageText.setText(BotMessageEnum.TO_DO_LIST.getMessage());
-    editMessageText.setReplyMarkup(
-        inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB));
-//    SendMessage sendMessage = new SendMessage(chatId, BotMessageEnum.TO_DO_LIST.getMessage());
-//    sendMessage.setReplyMarkup(
-//        inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB));
-//    return sendMessage;
-  }
-
-  private String getTaskDetailText(TaskEntity taskEntityFromDB) {
-    return String.format(BotMessageEnum.TASK_DETAIL.getMessage(),
-        taskEntityFromDB.getTitle(),
-        taskEntityFromDB.getDescription(),
-        taskEntityFromDB.getStatus().getText());
+  public List<BotApiMethod<?>> getTodoList(String chatId, Integer messageId, String userName) {
+    List<TaskEntity> tasksFromDB = getTaskService().getAllTasksByUserName(userName);
+    return List.of(BotApiMethodMapper.INSTANCE
+        .map(chatId,
+            messageId,
+            BotMessageEnum.TO_DO_LIST.getMessage(),
+            inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB)
+        ));
   }
 
   private String getDeleteTaskText(String title) {
     return String.format(BotMessageEnum.DELETE_TASK.getMessage(), title);
   }
 
-  private void updateTaskStatus(
-      EditMessageText editMessageText, String userName, Status status) {
-    String title = tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle();
-    taskService.updateTaskStatus(title, userName, status);
-//    return getTodoList(editMessageText, userName);
-    getTodoList(editMessageText, userName);
+  private List<BotApiMethod<?>> updateTaskStatus(
+      String chatId, Integer messageId, String userName, Status status) {
+    String title = tasksCache.getTasksMap().get(chatId).getTitle();
+    getTaskService().updateTaskStatus(title, userName, status);
+    return getTodoList(chatId, messageId, userName);
   }
 
-  private void deleteTask(EditMessageText editMessageText, String userName) {
-    String title = tasksCache.getTasksMap().get(editMessageText.getChatId()).getTitle();
-    taskService.deleteTaskByTitleAndUserName(title, userName);
-    editMessageText.setText(getDeleteTaskText(title));
-    List<TaskEntity> tasksFromDB = taskService.getAllTasksByUserName(userName);
-    editMessageText.setReplyMarkup(
-        inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB));
+  private EditMessageText deleteTask(String chatId, Integer messageId, String userName) {
+    String title = tasksCache.getTasksMap().get(chatId).getTitle();
+    getTaskService().deleteTaskByTitleAndUserName(title, userName);
+    List<TaskEntity> tasksFromDB = getTaskService().getAllTasksByUserName(userName);
 
-//    SendMessage sendMessage = new SendMessage(chatId, getDeleteTaskText(title));
-//    sendMessage.setReplyMarkup(
-//        inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB));
-    tasksCache.getTasksMap().remove(editMessageText.getChatId());
-//    return sendMessage;
+    tasksCache.getTasksMap().remove(chatId);
+    return BotApiMethodMapper.INSTANCE
+        .map(
+            chatId,
+            messageId,
+            getDeleteTaskText(title),
+            inlineKeyboardToDoListMaker.getInlineKeyboardForTodoList(tasksFromDB)
+        );
   }
 
-  private SendMessage taskMessage(String chatId, String botMessage) {
-    return new SendMessage(chatId, botMessage);
+  private EditMessageText newTaskMessage(String chatId, Integer messageId,
+      String botMessage) {
+    return BotApiMethodMapper.INSTANCE.map(chatId, messageId, botMessage,
+        getInlineKeyboardTaskDetailMaker().setBackToToDoListButton());
   }
 
-  public List<BotApiMethod<?>> processQuery(CallbackQuery query) {
-    return null;
-  }
+
 }

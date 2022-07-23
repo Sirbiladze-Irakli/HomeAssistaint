@@ -2,7 +2,7 @@ package com.sirbiladze.homeassistaint.service;
 
 import static java.lang.String.format;
 
-import com.sirbiladze.homeassistaint.model.Status;
+import com.sirbiladze.homeassistaint.model.constants.Status;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import com.sirbiladze.homeassistaint.model.exception.NotFoundException;
 import com.sirbiladze.homeassistaint.repository.TaskRepository;

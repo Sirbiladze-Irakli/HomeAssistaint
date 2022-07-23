@@ -1,7 +1,7 @@
 package com.sirbiladze.homeassistaint.bot.keyboards;
 
-import com.sirbiladze.homeassistaint.constants.BotButtonTextEnum;
-import com.sirbiladze.homeassistaint.constants.CallbackDataEnum;
+import com.sirbiladze.homeassistaint.model.constants.BotButtonTextEnum;
+import com.sirbiladze.homeassistaint.model.constants.CallbackDataEnum;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;

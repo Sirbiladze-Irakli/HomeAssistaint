@@ -1,7 +1,8 @@
 package com.sirbiladze.homeassistaint.bot.handler;
 
 import com.sirbiladze.homeassistaint.bot.keyboards.MainMenuInlineKeyboardMaker;
-import com.sirbiladze.homeassistaint.constants.BotMessageEnum;
+import com.sirbiladze.homeassistaint.mapper.BotApiMethodMapper;
+import com.sirbiladze.homeassistaint.model.constants.BotMessageEnum;
 import com.sirbiladze.homeassistaint.utils.BotUtils;
 import java.util.List;
 import lombok.AccessLevel;
@@ -12,15 +13,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.menubutton.SetChatMenuButton;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.menubutton.MenuButtonCommands;
 
 @Component
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class MainMenuHandler extends BotHandler {
+public class MainMenuHandler {
 
   MainMenuInlineKeyboardMaker mainMenuInlineKeyboardMaker;
 
@@ -40,13 +39,13 @@ public class MainMenuHandler extends BotHandler {
     return List.of(setChatMenuButton, sendMessage, deleteMessage);
   }
 
-  public List<BotApiMethod<?>> backToMainMenu(CallbackQuery query) {
-    EditMessageText editMessageText =
-        new EditMessageText(query.getMessage().getChatId().toString());
-    editMessageText.setText(BotMessageEnum.MAIN_MENU.getMessage());
-    editMessageText.setReplyMarkup(mainMenuInlineKeyboardMaker.getMainMenuInlineKeyboard());
-
-    return List.of(editMessageText);
+  public List<BotApiMethod<?>> backToMainMenu(String chatId, Integer messageId) {
+    return List.of(BotApiMethodMapper.INSTANCE
+        .map(chatId,
+            messageId,
+            BotMessageEnum.MAIN_MENU.getMessage(),
+            mainMenuInlineKeyboardMaker.getMainMenuInlineKeyboard()
+        ));
   }
 
 }

@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
  * не редактировать не ту запись.
  */
 
-//Todo возможно стоит задуматься о подключении redis
-
 @Service
 @Getter
 @Setter

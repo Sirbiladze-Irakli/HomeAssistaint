@@ -5,7 +5,7 @@ import com.sirbiladze.homeassistaint.bot.cache.InterfaceMessageCache;
 import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardTaskDetailMaker;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardToDoListMaker;
-import com.sirbiladze.homeassistaint.mapper.BotApiMethodMapper;
+import com.sirbiladze.homeassistaint.mapper.EditMessageTextMapper;
 import com.sirbiladze.homeassistaint.model.constants.BotMessageEnum;
 import com.sirbiladze.homeassistaint.model.constants.BotStateEnum;
 import com.sirbiladze.homeassistaint.model.constants.Status;
@@ -18,11 +18,8 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 @Component
@@ -50,27 +47,6 @@ public class CallbackQueryHandler extends BaseHandler {
     this.botStateCache = botStateCache;
     this.tasksCache = tasksCache;
     this.interfaceMessageCache = interfaceMessageCache;
-  }
-
-  public List<BotApiMethod<?>> toDoListProcessing(Message message, CallbackQuery query) {
-
-    EditMessageText editMessageText = new EditMessageText();
-    if (message != null && message.getText().equals("/start")) {
-      SendMessage sendMessage = new SendMessage(message.getChatId().toString(),
-          BotMessageEnum.TO_DO_LIST.getMessage());
-//      getTodoList(editMessageText.getChatId(),  message.getChat().getUserName());
-      sendMessage.setReplyMarkup(editMessageText.getReplyMarkup());
-      DeleteMessage deleteMessage =
-          new DeleteMessage(message.getChatId().toString(), message.getMessageId());
-      return List.of(sendMessage, deleteMessage);
-    } else {
-//      DeleteMessage deleteMessage =
-//          new DeleteMessage(message.getChatId().toString(), message.getMessageId()-2);
-      DeleteMessage deleteMessage1 =
-          new DeleteMessage(message.getChatId().toString(), message.getMessageId());
-      return List.of(deleteMessage1);
-    }
-
   }
 
   public List<BotApiMethod<?>> processQuery(CallbackQuery query) {
@@ -140,7 +116,7 @@ public class CallbackQueryHandler extends BaseHandler {
   }
 
   private EditMessageText deleteTaskOrNot(String chatId, Integer messageId) {
-    return BotApiMethodMapper.INSTANCE
+    return EditMessageTextMapper.INSTANCE
         .map(
             chatId,
             messageId,
@@ -156,12 +132,12 @@ public class CallbackQueryHandler extends BaseHandler {
         taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus().getText());
     InlineKeyboardMarkup inlineKeyboardMarkup =
         inlineKeyboardTaskDetailMaker.getInlineUpdateStatus(taskEntity.getStatus());
-    return BotApiMethodMapper.INSTANCE.map(chatId, messageId, text, inlineKeyboardMarkup);
+    return EditMessageTextMapper.INSTANCE.map(chatId, messageId, text, inlineKeyboardMarkup);
   }
 
   public List<BotApiMethod<?>> getTodoList(String chatId, Integer messageId, String userName) {
     List<TaskEntity> tasksFromDB = getTaskService().getAllTasksByUserName(userName);
-    return List.of(BotApiMethodMapper.INSTANCE
+    return List.of(EditMessageTextMapper.INSTANCE
         .map(chatId,
             messageId,
             BotMessageEnum.TO_DO_LIST.getMessage(),
@@ -186,7 +162,7 @@ public class CallbackQueryHandler extends BaseHandler {
     List<TaskEntity> tasksFromDB = getTaskService().getAllTasksByUserName(userName);
 
     tasksCache.getTasksMap().remove(chatId);
-    return BotApiMethodMapper.INSTANCE
+    return EditMessageTextMapper.INSTANCE
         .map(
             chatId,
             messageId,
@@ -197,7 +173,7 @@ public class CallbackQueryHandler extends BaseHandler {
 
   private EditMessageText newTaskMessage(String chatId, Integer messageId,
       String botMessage) {
-    return BotApiMethodMapper.INSTANCE.map(chatId, messageId, botMessage,
+    return EditMessageTextMapper.INSTANCE.map(chatId, messageId, botMessage,
         getInlineKeyboardTaskDetailMaker().setBackToToDoListButton());
   }
 

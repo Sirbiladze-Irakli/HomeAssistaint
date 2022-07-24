@@ -16,13 +16,8 @@ public class ReplyKeyboardMaker {
     KeyboardRow row1 = new KeyboardRow();
     row1.add(new KeyboardButton(TO_DO_LIST.getButtonText()));
 
-//    KeyboardRow row2 = new KeyboardRow();
-//    row2.add(new KeyboardButton("Удалить дело"));
-//    row2.add(new KeyboardButton("Выйти"));
-
     List<KeyboardRow> keyboard = new ArrayList<>();
     keyboard.add(row1);
-//    keyboard.add(row2);
 
     final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
     replyKeyboardMarkup.setKeyboard(keyboard);

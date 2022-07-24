@@ -1,9 +1,7 @@
 package com.sirbiladze.homeassistaint.bot.handler;
 
-import com.sirbiladze.homeassistaint.bot.cache.BotStateCache;
-import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
 import com.sirbiladze.homeassistaint.bot.keyboards.InlineKeyboardTaskDetailMaker;
-import com.sirbiladze.homeassistaint.mapper.BotApiMethodMapper;
+import com.sirbiladze.homeassistaint.mapper.EditMessageTextMapper;
 import com.sirbiladze.homeassistaint.model.constants.BotMessageEnum;
 import com.sirbiladze.homeassistaint.model.entity.TaskEntity;
 import com.sirbiladze.homeassistaint.service.TaskService;
@@ -32,7 +30,7 @@ public abstract class BaseHandler {
   public EditMessageText getTaskDetail(String chatId, Integer messageId,
       String title, String userName) {
     TaskEntity taskEntityFromDB = taskService.getTaskByTitleAndUserName(title, userName);
-    return BotApiMethodMapper.INSTANCE.map(chatId, messageId, getTaskDetailText(taskEntityFromDB),
+    return EditMessageTextMapper.INSTANCE.map(chatId, messageId, getTaskDetailText(taskEntityFromDB),
         inlineKeyboardTaskDetailMaker.getInlineKeyboardForTaskDetail(chatId));
   }
 

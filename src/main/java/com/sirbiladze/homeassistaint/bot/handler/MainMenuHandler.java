@@ -1,7 +1,7 @@
 package com.sirbiladze.homeassistaint.bot.handler;
 
 import com.sirbiladze.homeassistaint.bot.keyboards.MainMenuInlineKeyboardMaker;
-import com.sirbiladze.homeassistaint.mapper.BotApiMethodMapper;
+import com.sirbiladze.homeassistaint.mapper.EditMessageTextMapper;
 import com.sirbiladze.homeassistaint.model.constants.BotMessageEnum;
 import com.sirbiladze.homeassistaint.utils.BotUtils;
 import java.util.List;
@@ -40,7 +40,7 @@ public class MainMenuHandler {
   }
 
   public List<BotApiMethod<?>> backToMainMenu(String chatId, Integer messageId) {
-    return List.of(BotApiMethodMapper.INSTANCE
+    return List.of(EditMessageTextMapper.INSTANCE
         .map(chatId,
             messageId,
             BotMessageEnum.MAIN_MENU.getMessage(),

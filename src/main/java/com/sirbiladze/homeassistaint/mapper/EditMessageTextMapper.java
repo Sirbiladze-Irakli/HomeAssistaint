@@ -6,9 +6,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 @Mapper
-public interface BotApiMethodMapper {
+public interface EditMessageTextMapper {
 
-  BotApiMethodMapper INSTANCE = Mappers.getMapper(BotApiMethodMapper.class);
+  EditMessageTextMapper INSTANCE = Mappers.getMapper(EditMessageTextMapper.class);
 
   EditMessageText map(String chatId, Integer messageId, String text,
       InlineKeyboardMarkup replyMarkup);

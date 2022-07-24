@@ -1,4 +1,4 @@
-package com.sirbiladze.homeassistaint.model;
+package com.sirbiladze.homeassistaint.model.constants;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public enum Status {
+
   TO_DO("К Выполнению"),
   TO_DO_HEADER("К Выполнению⬇️"),
   IN_PROGRESS("В работе"),
@@ -18,4 +19,5 @@ public enum Status {
   NONE("➖");
 
   String text;
+
 }

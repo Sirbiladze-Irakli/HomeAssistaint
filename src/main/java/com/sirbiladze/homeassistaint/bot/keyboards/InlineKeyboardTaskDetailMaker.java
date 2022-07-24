@@ -1,9 +1,9 @@
 package com.sirbiladze.homeassistaint.bot.keyboards;
 
 import com.sirbiladze.homeassistaint.bot.cache.TasksCache;
-import com.sirbiladze.homeassistaint.constants.BotButtonTextEnum;
-import com.sirbiladze.homeassistaint.constants.CallbackDataEnum;
-import com.sirbiladze.homeassistaint.model.Status;
+import com.sirbiladze.homeassistaint.model.constants.BotButtonTextEnum;
+import com.sirbiladze.homeassistaint.model.constants.CallbackDataEnum;
+import com.sirbiladze.homeassistaint.model.constants.Status;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -90,6 +90,18 @@ public class InlineKeyboardTaskDetailMaker {
     delete.setCallbackData(CallbackDataEnum.DELETE.getCallbackData());
 
     buttonList.add(List.of(backToTaskDetail,delete));
+    InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+    inlineKeyboardMarkup.setKeyboard(buttonList);
+    return inlineKeyboardMarkup;
+  }
+
+  public InlineKeyboardMarkup setBackToToDoListButton() {
+    List<List<InlineKeyboardButton>> buttonList = new ArrayList<>();
+    InlineKeyboardButton backToToDoList = new InlineKeyboardButton();
+    backToToDoList.setText(BotButtonTextEnum.BACK_TO_TO_DO_LIST.getButtonText());
+    backToToDoList.setCallbackData(CallbackDataEnum.BACK_TO_TO_DO_LIST.getCallbackData());
+
+    buttonList.add(List.of(backToToDoList));
     InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
     inlineKeyboardMarkup.setKeyboard(buttonList);
     return inlineKeyboardMarkup;

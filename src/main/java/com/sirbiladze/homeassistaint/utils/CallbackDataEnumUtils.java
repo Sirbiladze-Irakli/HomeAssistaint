@@ -1,6 +1,6 @@
 package com.sirbiladze.homeassistaint.utils;
 
-import com.sirbiladze.homeassistaint.constants.CallbackDataEnum;
+import com.sirbiladze.homeassistaint.model.constants.CallbackDataEnum;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;

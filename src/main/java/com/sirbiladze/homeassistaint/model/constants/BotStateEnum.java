@@ -1,4 +1,4 @@
-package com.sirbiladze.homeassistaint.constants;
+package com.sirbiladze.homeassistaint.model.constants;
 
 
 public enum BotStateEnum {
